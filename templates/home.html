@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+    {% block content %}
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+        <div class="container">
+            <div class="page-header">
+                <div class="row">
+                    <div class="jumbotron tabletext">
+                        <div class="col-md-2" id="parel_list">
+                            Parcel
+                        </div>
+                        <div class="col-md-10" id="parcel_data">
+                            Data Goes Here
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {% include 'footer.html' %}
+        </div>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/parcel_load.js') }}"></script>
+
+    {% endblock %}
+{% endblock %}
