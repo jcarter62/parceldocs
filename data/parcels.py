@@ -2,14 +2,17 @@ import pyodbc
 from appsettings import Settings
 import copy
 
+
 class Parcels:
 
-    def __init__(self):
+    def __init__(self, page_size=10, page=1):
         self.settings = Settings()
         self.parcels = []
         self.parcels_flt = []
         self.active = '1'
-        pass
+        self.page_size = page_size
+        self.page = page
+        self.load_parcels()
 
     def _conn_str_(self, ):
         server = self.settings.get('sqlserver')
@@ -27,10 +30,23 @@ class Parcels:
         cmd = 'select parcel_id from parcel where isactive=%s order by parcel_id;' % self.active
         try:
             for row in cursor.execute(cmd):
-                result.append(self._extract_row(row))
-            self.parcels = copy.deepcopy(result)
+                parcel_record = self._extract_row(row)
+                result.append(parcel_record['parcel_id'])
         except Exception as e:
             print(str(e))
+
+        pagedata = []
+        # skip
+        index_low = (self.page - 1) * self.page_size
+        index_hi = self.page * self.page_size
+        i = 0
+        while i < len(result):
+            if (i > index_low) and (i <= index_hi):
+                pagedata.append(result[i])
+            i += 1
+
+        self.parcels = copy.deepcopy(pagedata)
+
         return
 
     #
