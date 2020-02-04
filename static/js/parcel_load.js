@@ -30,4 +30,9 @@ function parcel_load() {
     }
 }
 
-document.onload = parcel_load();
+window.addEventListener('load', parcel_load);
+//document.onload = parcel_load();
+
+window.addEventListener('load', (event) => {
+  console.log('page loaded from parcel_load.js');
+});

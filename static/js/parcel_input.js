@@ -1,4 +1,3 @@
-
 function parcel_lookup() {
     let timer = null;
     let delay = 1500;
@@ -27,7 +26,7 @@ function parcel_lookup_exec() {
 
 function parcel_load_value() {
     let value = localStorage.getItem('inp_parcel');
-    if ( value != null ) {
+    if (value != null) {
         let element = document.getElementById('inp_parcel');
         element.value = value;
         parcel_partial_load(value);
@@ -36,20 +35,20 @@ function parcel_load_value() {
 
 function parcel_partial_load(search_value) {
     let val = search_value;
-    let url = '/api/parcel-search/' + val ;
+    let url = '/api/parcel-search/' + val;
     const Http = new XMLHttpRequest();
     Http.open('GET', url);
     Http.send();
 
-    Http.onreadystatechange = function() {
+    Http.onreadystatechange = function () {
         if ((this.readyState == 4) && (this.status == 200)) {
             let parcels = Http.responseText;
             parcels = JSON.parse(parcels);
             let e = document.getElementById('parcel_list');
             let new_text = '<dl>';
-            for ( let i in parcels ) {
+            for (let i in parcels) {
                 let tag = '<div class="row" onclick="parcel_selected(\'' + parcels[i] + '\');">';
-                new_text = new_text +  tag;
+                new_text = new_text + tag;
                 new_text = new_text + parcels[i];
                 new_text = new_text + '</div>';
             }
@@ -66,32 +65,39 @@ function parcel_selected(parcel_id) {
 }
 
 function retrieve_parcel_files(parcel_id) {
-    let url = '/api/parcel-files/' + parcel_id ;
+    let url = '/api/parcel-files/' + parcel_id;
     const Http = new XMLHttpRequest();
     Http.open('GET', url);
     Http.send();
 
-    Http.onreadystatechange = function() {
+    Http.onreadystatechange = function () {
         if ((this.readyState == 4) && (this.status == 200)) {
             let file_list = Http.responseText;
             let files = JSON.parse(file_list);
-            let e = document.getElementById('parcel_files');
-            let new_text = '<dl>';
-            for ( let i in files ) {
-                let encoded = window.btoa(files[i].fullpath);
-                let tag = '<div class="row"><a target="_blank" href="/sendfile/' + encoded + '">';
-                new_text = new_text +  tag;
-                new_text = new_text + files[i].name;
-                new_text = new_text + '</a></div>';
+            let new_text = '';
+            if (files.length <= 0) {
+                new_text = '<h3>No Files for parcel ' + parcel_id + '</h3>';
+            } else {
+                new_text = '<dl>';
+                for (let i in files) {
+                    let encoded = window.btoa(files[i].fullpath);
+                    let tag = '<div class="row"><a target="_blank" href="/sendfile/' + encoded + '">';
+                    new_text = new_text + tag;
+                    new_text = new_text + files[i].name;
+                    new_text = new_text + '</a></div>';
+                }
+                new_text = new_text + '</dl>';
             }
-            new_text = new_text + '</dl>';
+            let e = document.getElementById('parcel_files');
             e.innerHTML = new_text;
         }
     }
 }
 
-function parcel_openfile(filename) {
+window.addEventListener('load', parcel_load_value);
 
-}
+// parcel_load_value();
 
-parcel_load_value();
+window.addEventListener('load', (event) => {
+  console.log('page loaded from parcel_input.js');
+});

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, make_response, redirect, send_file
+from flask import Flask, render_template, jsonify, request, make_response, redirect, send_file, send_from_directory
 from flask_bootstrap import Bootstrap
 from data import Parcels
 from docs import ParcelFolder, FileList
@@ -79,6 +79,11 @@ def route_sendfile(encoded):
     print(filename)
     return send_file(filename)
 
+@app.route('/favicon.ico')
+def favicon():
+    import os
+
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
 if __name__ == '__main__':
     app.run()
