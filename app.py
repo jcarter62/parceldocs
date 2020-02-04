@@ -1,6 +1,7 @@
-from flask import Flask, render_template, jsonify, request, make_response, redirect
+from flask import Flask, render_template, jsonify, request, make_response, redirect, send_file
 from flask_bootstrap import Bootstrap
 from data import Parcels
+from docs import ParcelFolder, FileList
 import json
 
 app = Flask(__name__)
@@ -37,6 +38,24 @@ def route_api_parcels():
     return jsonify(p.parcels), 200
 
 
+@app.route('/api/parcel-search/<srch_str>')
+def route_parcel_search(srch_str):
+    search_str = srch_str
+    p = Parcels()
+    p.filter_parcels(partial=search_str)
+    return jsonify(p.parcels_flt), 200
+
+
+@app.route('/api/parcel-files/<parcel>')
+def route_parcel_files(parcel):
+    filelist = FileList(parcel=parcel)
+
+    return jsonify(filelist.files), 200
+
+
+
+
+
 @app.route('/setup', methods=['GET', 'POST'])
 def route_setup():
     from appsettings import Settings
@@ -52,6 +71,13 @@ def route_setup():
             item['value'] = formitem
         settings.save_config()
         return redirect('/setup')
+
+@app.route('/sendfile/<encoded>')
+def route_sendfile(encoded):
+    import base64
+    filename = base64.standard_b64decode(encoded).decode('ascii')
+    print(filename)
+    return send_file(filename)
 
 
 if __name__ == '__main__':

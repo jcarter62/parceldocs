@@ -35,17 +35,17 @@ class Parcels:
         except Exception as e:
             print(str(e))
 
-        pagedata = []
-        # skip
-        index_low = (self.page - 1) * self.page_size
-        index_hi = self.page * self.page_size
-        i = 0
-        while i < len(result):
-            if (i > index_low) and (i <= index_hi):
-                pagedata.append(result[i])
-            i += 1
+        # pagedata = []
+        # # skip
+        # index_low = (self.page - 1) * self.page_size
+        # index_hi = self.page * self.page_size
+        # i = 0
+        # while i < len(result):
+        #     if (i > index_low) and (i <= index_hi):
+        #         pagedata.append(result[i])
+        #     i += 1
 
-        self.parcels = copy.deepcopy(pagedata)
+        self.parcels = copy.deepcopy(result)
 
         return
 
@@ -55,9 +55,11 @@ class Parcels:
     def filter_parcels(self, partial:str = ''):
         self.parcels_flt = []
         token = partial.lower()
-        for p in self.parcels:
-            if token in p['parcel_id']:
-                self.parcels_flt.append(p)
+        i = 0
+        while i < len(self.parcels):
+            if token in self.parcels[i].lower():
+                self.parcels_flt.append(self.parcels[i])
+            i += 1
 
     def _extract_row(self, row):
         r = {}

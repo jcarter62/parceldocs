@@ -13,6 +13,12 @@
                 <a class="navbar-brand" href="/">Parcel Docs</a>
             </div>
             <div class="navbar-collapse collapse">
+                <form class="navbar-form navbar-right" >
+                    <div class="form-group">
+                        <input type="text" placeholder="Parcel ID" onkeyup="parcel_lookup()" id="inp_parcel"/>
+                    </div>
+{#                    <button type="submit" class="btn btn-success">Search</button>#}
+                </form>
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
                     <li><a href="/setup">Setup</a></li>
@@ -23,6 +29,7 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/parcel_input.js') }}"></script>
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -30,4 +37,3 @@
         {% endblock %}
     </div>
 {% endblock %}
-
