@@ -12,7 +12,27 @@ import base64
 app = Flask(__name__)
 Bootstrap(app)
 
+#
+# Utility methods
+#
+def float2datetime(epoc):
+    import datetime
+    result = ''
+    dt = datetime.datetime.fromtimestamp(epoc)
+    result = dt.strftime('%m/%d/%Y %H:%M:%S')
+    return result
 
+
+def b2k(num):
+    result = '0k'
+    n = int(num)
+    k = round(n/1024, 2)
+    result = str(k) + 'k'
+    return result
+
+#
+# Routes
+#
 @app.route('/')
 def home():
     context = {
@@ -24,12 +44,14 @@ def home():
 
 @app.route('/selected/<parcel_id>')
 def route_selected_parcel(parcel_id):
+    import datetime
     file_list = FileList(parcel=parcel_id)
     for f in file_list.files:
         fpath = bytes(f['fullpath'], 'utf-8')
         f['encoded'] = ''
         f['encoded'] = base64.standard_b64encode(fpath).decode('utf-8')
-
+        f['mtime'] = float2datetime(f['info'].st_mtime)
+        f['filesize'] = b2k(f['info'].st_size)
 
     context = {
         'title': 'parcel selected',
@@ -94,8 +116,16 @@ def route_sendfile(encoded):
     filename = base64.standard_b64decode(encoded).decode('ascii')
     print(filename)
     folder, file = os.path.split(filename)
-#    return send_from_directory(folder, file)
     return send_file(filename, as_attachment=True, attachment_filename=file)
+
+
+@app.route('/deletefile/<encoded>/<parcel>')
+def route_deletefile(encoded, parcel):
+    filename = base64.standard_b64decode(encoded).decode('ascii')
+    os.remove(filename)
+    redirect_to = '/selected/%s' % parcel
+    return redirect(redirect_to)
+
 
 @app.route('/uploadfile', methods=['POST'])
 def route_uploadfile():

@@ -1,0 +1,20 @@
+.icon {
+    height: 1.5em;
+}
+
+.iconx2 {
+    height: 2.0em;
+}
+
+/* Ref: https://www.w3schools.com/howto/howto_css_fixed_footer.asp */
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: left;
+    font-size: smaller;
+    font-style: italic;
+}

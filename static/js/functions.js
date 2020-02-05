@@ -82,14 +82,8 @@ function parcel_partial_load(search_value) {
             parcels = JSON.parse(parcels);
             let e = document.getElementById('parcel_list');
             let new_text = '<dl>';
-            // for (let i in parcels) {
-            //     let tag = '<div class="row" onclick="parcel_selected(\'' + parcels[i] + '\');">';
-            //     new_text = new_text + tag;
-            //     new_text = new_text + parcels[i];
-            //     new_text = new_text + '</div>';
-            // }
             for (let i in parcels) {
-                let tag = '<div class="row" ><a target="_blank" href="/selected/' + parcels[i] + '">'
+                let tag = '<div class="row" ><a href="/selected/' + parcels[i] + '">'
                 new_text = new_text + tag;
                 new_text = new_text + parcels[i];
                 new_text = new_text + '</a></div>';
@@ -138,6 +132,8 @@ function retrieve_parcel_files(parcel_id) {
     }
 }
 
-
+function rename_file(fileinfo) {
+    console.log(fileinfo)
+}
 
 
