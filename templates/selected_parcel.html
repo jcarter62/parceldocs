@@ -13,8 +13,9 @@
                 <hr>
                 {% for f in context.files %}
                     <div class="row">
+                        <a target="_blank" href="/sendfile/{{ f.encoded }}">
                         <div class="col-sm-4">
-                            <a target="_blank" href="/sendfile/{{ f.encoded }}">{{ f.name }}</a>
+                            {{ f.name }}
                         </div>
                         <div class="col-sm-3">
                             {{ f.filesize }}
@@ -22,9 +23,10 @@
                         <div class="col-sm-3">
                             {{ f.mtime }}
                         </div>
+                        </a>
                         <div class="col-sm-1">
-                            <img class="icon" src="{{ url_for('static', filename='icons/301-edit.svg') }}" onclick="rename_file('{{ f.fullpath }}')" />
-                            <a href="/deletefile/{{ f.encoded }}/{{ context.parcel }}"><img class="icon" src="{{ url_for('static', filename='icons/301-garbage-1.svg') }}" /></a>
+                            <a href="/renamefile/{{ f.encoded }}/{{ context.parcel }}" title="Rename" ><img class="icon" src="{{ url_for('static', filename='icons/301-edit.svg') }}" /></a>
+                            <a href="/deletefile/{{ f.encoded }}/{{ context.parcel }}" title="Remove"><img class="icon" src="{{ url_for('static', filename='icons/301-garbage-1.svg') }}" /></a>
                         </div>
                     </div>
                 {% endfor %}

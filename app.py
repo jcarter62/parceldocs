@@ -126,6 +126,39 @@ def route_deletefile(encoded, parcel):
     redirect_to = '/selected/%s' % parcel
     return redirect(redirect_to)
 
+@app.route('/renamefile/<encoded>/<parcel>')
+def route_renamefile(encoded, parcel):
+    filename = base64.standard_b64decode(encoded).decode('ascii')
+    folder, file = os.path.split(filename)
+    context = {
+        'title': 'rename parcel file',
+        'showsearch': False,
+        'parcel': parcel,
+        'file': file,
+        'encoded': encoded
+    }
+    return render_template('rename_parcel_file.html', context=context)
+
+
+@app.route('/renamefile', methods=['POST'])
+def route_renamefile_post():
+    encoded = request.form['encoded']
+    parcel = request.form['parcel']
+    newfilename = request.form['newfilename']
+    #
+    # Extract full path, and then split into path and name.
+    fullpath = base64.standard_b64decode(encoded).decode('ascii')
+    folder, file = os.path.split(fullpath)
+    #
+    # create new full path
+    newfullpath = os.path.join(folder, newfilename)
+    #
+    # now rename the old file to new file.
+    os.rename(fullpath, newfullpath)
+
+    redirect_to = '/selected/%s' % parcel
+    return redirect(redirect_to)
+
 
 @app.route('/uploadfile', methods=['POST'])
 def route_uploadfile():
