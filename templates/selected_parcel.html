@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+    {% block content %}
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+        <div class="container">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-xs-8" id="parcel_files">
+                        Parcel: {{ context.parcel }}
+                    </div>
+                </div>
+                <hr>
+                {% for f in context.files %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <a target="_blank" href="/sendfile/{{ f.encoded }}">{{ f.name }}</a>
+                        </div>
+                        <div class="col-sm-3">
+                            {{ f.info.st_size }}B
+                        </div>
+                        <div class="col-sm-3">
+                            {{ f.info.st_mtime.strftime("%m/%d/%y %H:%M:%S") }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <hr>
+
+            <form action="/uploadfile" method="post" enctype="multipart/form-data">
+                <label>File:</label>
+                <input type="file" id="fileElem" name="file"/><br>
+                {# The following is set when user selects a parcel. #}
+                <input type="hidden" id="fileElemParcel" name="parcel_id" value="{{ context.parcel }}"/>
+                <input type="submit" />
+            </form>
+
+            {% include 'footer.html' %}
+        </div>
+    {% endblock %}
+{% endblock %}

@@ -7,22 +7,27 @@
             <div class="page-header">
                 <div class="row">
                         <div class="col-xs-3" id="parcel_list">
-                            <ul>
-                                {% for p in context.parcels %}
-                                    <li>{{ p }}</li>
-                                {% endfor %}
-                            </ul>
                         </div>
                         <div class="col-xs-8" id="parcel_files">
-                            &nbsp;
                         </div>
                 </div>
             </div>
             <hr>
+
+            <form action="/uploadfile" method="post" enctype="multipart/form-data">
+                <label>File:</label>
+                <input type="file" id="fileElem" name="file"/><br>
+                {# The following is set when user selects a parcel. #}
+                <input type="hidden" id="fileElemParcel" name="parcel_id" value=""/>
+                <input type="submit" />
+            </form>
+
             {% include 'footer.html' %}
         </div>
-{#        <script type="text/javascript" src="{{ url_for('static', filename='js/parcel_load.js') }}"></script>#}
-        <script type="text/javascript" src="{{ url_for('static', filename='js/dragdrop.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/functions.js') }}"></script>
+    <script type="text/javascript">
+        window.addEventListener('load', parcel_load_value);
+    </script>
 
     {% endblock %}
 {% endblock %}

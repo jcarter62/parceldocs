@@ -54,12 +54,15 @@ class Parcels:
     #
     def filter_parcels(self, partial:str = ''):
         self.parcels_flt = []
-        token = partial.lower()
-        i = 0
-        while i < len(self.parcels):
-            if token in self.parcels[i].lower():
-                self.parcels_flt.append(self.parcels[i])
-            i += 1
+        if partial <= '':
+            self.parcels_flt = self.parcels
+        else:
+            token = partial.lower()
+            i = 0
+            while i < len(self.parcels):
+                if token in self.parcels[i].lower():
+                    self.parcels_flt.append(self.parcels[i])
+                i += 1
 
     def _extract_row(self, row):
         r = {}

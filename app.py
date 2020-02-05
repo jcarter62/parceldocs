@@ -1,22 +1,43 @@
 from flask import Flask, render_template, jsonify, request, make_response, redirect, send_file, send_from_directory
 from flask_bootstrap import Bootstrap
+from werkzeug.utils import secure_filename
 from data import Parcels
 from docs import ParcelFolder, FileList
 import json
+from appsettings import Settings
+from docs import ParcelFolder
+import os
+import base64
 
 app = Flask(__name__)
 Bootstrap(app)
 
 
 @app.route('/')
-def hello_world():
-    p = Parcels().parcels
-
+def home():
     context = {
         'title': 'home',
-        'parcels': p
+        'showsearch': True,
     }
     return render_template('home.html', context=context)
+
+
+@app.route('/selected/<parcel_id>')
+def route_selected_parcel(parcel_id):
+    file_list = FileList(parcel=parcel_id)
+    for f in file_list.files:
+        fpath = bytes(f['fullpath'], 'utf-8')
+        f['encoded'] = ''
+        f['encoded'] = base64.standard_b64encode(fpath).decode('utf-8')
+
+
+    context = {
+        'title': 'parcel selected',
+        'showsearch': False,
+        'parcel': parcel_id,
+        'files': file_list.files
+    }
+    return render_template('selected_parcel.html', context=context)
 
 
 @app.route('/parcels/<page>')
@@ -48,17 +69,12 @@ def route_parcel_search(srch_str):
 
 @app.route('/api/parcel-files/<parcel>')
 def route_parcel_files(parcel):
-    filelist = FileList(parcel=parcel)
-
-    return jsonify(filelist.files), 200
-
-
-
+    file_list = FileList(parcel=parcel)
+    return jsonify(file_list.files), 200
 
 
 @app.route('/setup', methods=['GET', 'POST'])
 def route_setup():
-    from appsettings import Settings
     if request.method == 'GET':
         settings = Settings()
         context = {'settings': settings.items}
@@ -72,18 +88,33 @@ def route_setup():
         settings.save_config()
         return redirect('/setup')
 
+
 @app.route('/sendfile/<encoded>')
 def route_sendfile(encoded):
-    import base64
     filename = base64.standard_b64decode(encoded).decode('ascii')
     print(filename)
-    return send_file(filename)
+    folder, file = os.path.split(filename)
+#    return send_from_directory(folder, file)
+    return send_file(filename, as_attachment=True, attachment_filename=file)
+
+@app.route('/uploadfile', methods=['POST'])
+def route_uploadfile():
+    if request.method == 'POST':
+        f = request.files['file']
+        parcel_id = request.form['parcel_id']
+        pf = ParcelFolder(parcel=parcel_id)
+        fullpath = os.path.join(pf.path, secure_filename(f.filename))
+        f.save(fullpath)
+
+        redirect_to = '/selected/%s' % parcel_id
+        return redirect(redirect_to)
+
 
 @app.route('/favicon.ico')
 def favicon():
     import os
-
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
+
 
 if __name__ == '__main__':
     app.run()
