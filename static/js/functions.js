@@ -148,3 +148,33 @@ function open_county_info(parcel) {
 function enter_apn_num() {
     Clipboard.writeText(parcel_id);
 }
+
+function dragdrop_init() {
+    // Ref: https://youtu.be/hqSlVvKvvjQ
+    let drop_zone = document.getElementById('dropzone');
+
+    drop_zone.ondragover = function() {
+        this.className = 'dropzone dragover';
+        return false;
+    }
+
+    drop_zone.ondragleave = function() {
+        this.className = 'dropzone';
+        return false;
+    }
+
+    function upload(files){
+        for(let i=0; i < files.length; i++) {
+            onefile = files[i].name;
+            inputItem = document.getElementById('fileElem');
+            inputItem.value = onefile;
+        }
+    }
+
+    drop_zone.ondrop = function(e) {
+        e.preventDefault();
+        this.className = 'dropzone';
+        upload(e.dataTransfer.files);
+    }
+}
+

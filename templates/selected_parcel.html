@@ -62,9 +62,14 @@
                 <input type="submit" />
             </form>
 
+            <div class="dropzone" id="dropzone">Drop Files Here.</div>
+
             {% include 'footer.html' %}
         </div>
         <script type="text/javascript" src="{{ url_for('static', filename='js/functions.js') }}"></script>
+        <script type="text/javascript">
+            dragdrop_init();
+        </script>
 
     {% endblock %}
 {% endblock %}
