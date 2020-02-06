@@ -53,11 +53,16 @@ def route_selected_parcel(parcel_id):
         f['mtime'] = float2datetime(f['info'].st_mtime)
         f['filesize'] = b2k(f['info'].st_size)
 
+    p = Parcels()
+    p.load_one_parcel(parcel_id)
+    details = p.parcel
+
     context = {
         'title': 'parcel selected',
         'showsearch': False,
         'parcel': parcel_id,
-        'files': file_list.files
+        'files': file_list.files,
+        'details': details
     }
     return render_template('selected_parcel.html', context=context)
 
@@ -79,6 +84,17 @@ def route_api_parcels():
     p = Parcels()
     p.load_parcels()
     return jsonify(p.parcels), 200
+
+
+@app.route('/api/parcel/<parcel>')
+def route_api_parcel_parcel(parcel):
+    p = Parcels()
+    p.load_one_parcel(parcel)
+    if p.parcel is None:
+        result_code = 204
+    else:
+        result_code = 200
+    return jsonify(p.parcel), result_code
 
 
 @app.route('/api/parcel-search/<srch_str>')

@@ -12,6 +12,7 @@ class Parcels:
         self.active = '1'
         self.page_size = page_size
         self.page = page
+        self.parcel = None
         self.load_parcels()
 
     def _conn_str_(self, ):
@@ -34,19 +35,35 @@ class Parcels:
                 result.append(parcel_record['parcel_id'])
         except Exception as e:
             print(str(e))
-
-        # pagedata = []
-        # # skip
-        # index_low = (self.page - 1) * self.page_size
-        # index_hi = self.page * self.page_size
-        # i = 0
-        # while i < len(result):
-        #     if (i > index_low) and (i <= index_hi):
-        #         pagedata.append(result[i])
-        #     i += 1
-
         self.parcels = copy.deepcopy(result)
+        return
 
+    def load_one_parcel(self, parcel_id):
+        self.parcel = None
+        conn = pyodbc.connect(self._conn_str_())
+        cursor = conn.cursor()
+        cmd = """
+            select
+                p.Parcel_Id, p.Acres, p.IsActive, p.Section, p.Township, p.Range, c.Description as county, p.LegalDesc, isnull(p.Notes,'') as Notes
+            from parcel p join code c on p.CountyCode = c.CODE_ID
+            where p.Parcel_Id = '%s'
+        """ % parcel_id
+        try:
+            for row in cursor.execute(cmd):
+                record = self._extract_row(row)
+                self.parcel = {
+                    'parcel_id': record['parcel_id'],
+                    'acres': record['acres'],
+                    'active':  (record['isactive'] == '1'),
+                    'section': record['section'],
+                    'township': record['township'],
+                    'range': record['range'],
+                    'legal': record['legaldesc'],
+                    'notes': record['notes'],
+                    'county': record['county']
+                }
+        except Exception as e:
+            print(str(e))
         return
 
     #

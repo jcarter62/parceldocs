@@ -6,30 +6,51 @@
         <div class="container">
             <div class="page-header">
                 <div class="row">
-                    <div class="col-xs-8" id="parcel_files">
-                        Parcel: {{ context.parcel }}
-                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td class="col">{{ context.parcel }}</td>
+                            <td class="col">Acres: {{ context.details.acres }}</td>
+                            <td class="col">County: {{ context.details.county }}</td>
+                        </tr>
+                        <tr>
+                            <td class="col">STR: {{ context.details.section }}/{{ context.details.township }}/{{ context.details.range }}</td>
+                            <td class="col">{{ context.details.legal }}</td>
+                            <td class="col">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-push-12">Notes:{{ context.details.notes }}</td>
+                        </tr>
+
+                        <tr><td class="col-xs-push-12" onclick="open_county_info();" >County Lookup</td></tr>
+
+                        </tbody>
+                    </table>
                 </div>
                 <hr>
-                {% for f in context.files %}
-                    <div class="row">
-                        <a target="_blank" href="/sendfile/{{ f.encoded }}">
-                        <div class="col-sm-4">
-                            {{ f.name }}
-                        </div>
-                        <div class="col-sm-3">
-                            {{ f.filesize }}
-                        </div>
-                        <div class="col-sm-3">
-                            {{ f.mtime }}
-                        </div>
-                        </a>
-                        <div class="col-sm-1">
-                            <a href="/renamefile/{{ f.encoded }}/{{ context.parcel }}" title="Rename" ><img class="icon" src="{{ url_for('static', filename='icons/301-edit.svg') }}" /></a>
-                            <a href="/deletefile/{{ f.encoded }}/{{ context.parcel }}" title="Remove"><img class="icon" src="{{ url_for('static', filename='icons/301-garbage-1.svg') }}" /></a>
-                        </div>
-                    </div>
-                {% endfor %}
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">File</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in context.files %}
+                            <tr>
+                                <td class="col-xx-4"><a target="_blank" href="/sendfile/{{ f.encoded }}">{{ f.name }}</a></td>
+                                <td class="col-xs-3">{{ f.filesize }}</td>
+                                <td class="col-xs-3">{{ f.mtime }}</td>
+                                <td class="col-xs-1">
+                                    <a href="/renamefile/{{ f.encoded }}/{{ context.parcel }}" title="Rename" ><img class="icon" src="{{ url_for('static', filename='icons/301-edit.svg') }}" /></a>
+                                    <a href="/deletefile/{{ f.encoded }}/{{ context.parcel }}" title="Remove"><img class="icon" src="{{ url_for('static', filename='icons/301-garbage-1.svg') }}" /></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             <hr>
 

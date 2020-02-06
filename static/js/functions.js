@@ -136,4 +136,15 @@ function rename_file(fileinfo) {
     console.log(fileinfo)
 }
 
+let parcel_id = ''
+let win = null;
+function open_county_info(parcel) {
+    parcel_id = parcel;
+    console.log(parcel_id);
+    win = window.open('https://assr.parcelquest.com/FRE');
+    win.onload = enter_apn_num();
+}
 
+function enter_apn_num() {
+    Clipboard.writeText(parcel_id);
+}
