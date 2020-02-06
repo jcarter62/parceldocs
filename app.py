@@ -44,7 +44,6 @@ def home():
 
 @app.route('/selected/<parcel_id>')
 def route_selected_parcel(parcel_id):
-    import datetime
     file_list = FileList(parcel=parcel_id)
     for f in file_list.files:
         fpath = bytes(f['fullpath'], 'utf-8')
@@ -176,17 +175,16 @@ def route_renamefile_post():
     return redirect(redirect_to)
 
 
-@app.route('/uploadfile', methods=['POST'])
-def route_uploadfile():
-    if request.method == 'POST':
-        f = request.files['file']
+@app.route('/uploadfiles', methods=['POST'])
+def route_uploadfiles():
+    for item in request.files:
+        f = request.files[item]
         parcel_id = request.form['parcel_id']
         pf = ParcelFolder(parcel=parcel_id)
         fullpath = os.path.join(pf.path, secure_filename(f.filename))
         f.save(fullpath)
 
-        redirect_to = '/selected/%s' % parcel_id
-        return redirect(redirect_to)
+    return jsonify({'status': 'ok'}), 200
 
 
 @app.route('/favicon.ico')

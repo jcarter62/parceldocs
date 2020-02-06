@@ -14,14 +14,20 @@
                 <form action="/renamefile" method="post">
                     <input type="hidden" name="encoded" value="{{ context.encoded }}"/>
                     <input type="hidden" name="parcel" value="{{ context.parcel }}"/>
-                    <div class="row">
-                        <div class="col-sm-2">Current File:</div>
-                        <div class="col-sm-8">{{ context.file }}</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-2">New File Name:</div>
-                        <div class="col-sm-8"><input type="text" name="newfilename" value="{{ context.file }}" /></div>
-                    </div>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <td class="col">Current File:</td>
+                            <td class="col" colspan="3">{{ context.file }}</td>
+                        </tr>
+                        <tr>
+                            <td class="col">New File Name:</td>
+                            <td class="col" colspan="3">
+                                <input type="text" name="newfilename" class="form-control" value="{{ context.file }}" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                     <button class="btn btn-default" type="submit">Apply</button>
                 </form>
 

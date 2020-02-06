@@ -138,20 +138,11 @@ function rename_file(fileinfo) {
 
 let parcel_id = ''
 let win = null;
-function open_county_info(parcel) {
-    parcel_id = parcel;
-    console.log(parcel_id);
-    win = window.open('https://assr.parcelquest.com/FRE');
-    win.onload = enter_apn_num();
-}
-
-function enter_apn_num() {
-    Clipboard.writeText(parcel_id);
-}
 
 function dragdrop_init() {
     // Ref: https://youtu.be/hqSlVvKvvjQ
     let drop_zone = document.getElementById('dropzone');
+    let visible_parcel_id = document.getElementById('parcel_id').innerText;
 
     drop_zone.ondragover = function() {
         this.className = 'dropzone dragover';
@@ -164,11 +155,25 @@ function dragdrop_init() {
     }
 
     function upload(files){
-        for(let i=0; i < files.length; i++) {
-            onefile = files[i].name;
-            inputItem = document.getElementById('fileElem');
-            inputItem.value = onefile;
+        let formData = new FormData();
+        let xhr = new XMLHttpRequest();
+        let i = 0;
+
+        for (i=0; i<files.length; i++) {
+            let name = 'file' + i.toString();
+            formData.append(name, files[i]);
         }
+        formData.append('parcel_id', visible_parcel_id);
+
+        xhr.addEventListener('load', function(e) {
+            let info = e.target;
+            if (( info.readyState == 4 ) && (info.status == 200)) {
+                location.reload();
+            }
+        });
+
+        xhr.open('post', '/uploadfiles');
+        xhr.send(formData);
     }
 
     drop_zone.ondrop = function(e) {
