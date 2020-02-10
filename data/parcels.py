@@ -69,7 +69,8 @@ class Parcels:
     #
     # apply filter to self.parcels, and store in parcels_flt
     #
-    def filter_parcels(self, partial:str = ''):
+    def filter_parcels(self, partial: str = ''):
+        from docs import FileList
         self.parcels_flt = []
         if partial <= '':
             self.parcels_flt = self.parcels
@@ -78,8 +79,20 @@ class Parcels:
             i = 0
             while i < len(self.parcels):
                 if token in self.parcels[i].lower():
-                    self.parcels_flt.append(self.parcels[i])
+                    matched = {
+                        'parcel': self.parcels[i],
+                        'files': 0,
+                        'size': 0.0
+                    }
+                    self.parcels_flt.append(matched)
                 i += 1
+
+        if self.parcels_flt.__len__() < 100:
+            for parcel in self.parcels_flt:
+                details = FileList(parcel=parcel['parcel']).file_sys_details()
+                parcel['files'] = details['filecount']
+                parcel['size'] = details['size']
+
 
     def _extract_row(self, row):
         r = {}

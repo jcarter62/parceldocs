@@ -5,12 +5,18 @@
         <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
         <div class="container">
             <div class="page-header">
-                <div class="row">
-                        <div class="col-xs-3" id="parcel_list">
-                        </div>
-                        <div class="col-xs-8" id="parcel_files">
-                        </div>
-                </div>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Parcel ID</th>
+                            <th scope="col">Files</th>
+                            <th scope="col">Size</th>
+                        </tr>
+                    </thead>
+                    <tbody id="parcel_list">
+                        &nbsp;
+                    </tbody>
+                </table>
             </div>
             <hr>
 

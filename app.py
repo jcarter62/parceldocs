@@ -96,6 +96,13 @@ def route_api_parcel_parcel(parcel):
     return jsonify(p.parcel), result_code
 
 
+@app.route('/api/parcel-doc-info/<parcel>')
+def route_api_parcel_doc_info(parcel):
+    files = FileList(parcel=parcel)
+    files_details = files.file_sys_details()
+    return jsonify(files_details), 200
+
+
 @app.route('/api/parcel-search/<srch_str>')
 def route_parcel_search(srch_str):
     search_str = srch_str

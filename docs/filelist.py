@@ -21,3 +21,19 @@ class FileList:
             file = {'name': name, 'fullpath': full_path, 'info': info}
             self.files.append(file)
         return
+
+    #
+    # Determine how many files, and total size
+    #
+    def file_sys_details(self):
+        fcount = 0
+        fsize = 0
+        for f in self.files:
+            fcount += 1
+            fsize += f['info'].st_size
+
+        result = {
+            'filecount': fcount,
+            'size': fsize
+        }
+        return result

@@ -81,14 +81,17 @@ function parcel_partial_load(search_value) {
             let parcels = Http.responseText;
             parcels = JSON.parse(parcels);
             let e = document.getElementById('parcel_list');
-            let new_text = '<dl>';
+            let new_text = '';
             for (let i in parcels) {
-                let tag = '<div class="row" ><a href="/selected/' + parcels[i] + '">'
+                let tag = '<tr><td class="col-xs-4" ><a href="/selected/' + parcels[i]['parcel'] + '">'
                 new_text = new_text + tag;
-                new_text = new_text + parcels[i];
-                new_text = new_text + '</a></div>';
+                new_text = new_text + parcels[i]['parcel'];
+                new_text = new_text + '</a></td>';
+                new_text = new_text + '<td class="col-xs-3">' + parcels[i]['files'] + '</td>';
+                new_text = new_text + '<td class="col-xs-3">' + parcels[i]['size'] + '</td>';
+                new_text = new_text + '</tr>';
             }
-            new_text = new_text + '</dl>';
+            new_text = new_text + '';
             e.innerHTML = new_text;
         }
     }
@@ -136,8 +139,8 @@ function rename_file(fileinfo) {
     console.log(fileinfo)
 }
 
-let parcel_id = ''
-let win = null;
+// let parcel_id = ''
+// let win = null;
 
 function dragdrop_init() {
     // Ref: https://youtu.be/hqSlVvKvvjQ
@@ -181,5 +184,23 @@ function dragdrop_init() {
         this.className = 'dropzone';
         upload(e.dataTransfer.files);
     }
+}
+
+function parcel_files_init(parcel_id) {
+    function get_details(){
+        let xhr = new XMLHttpRequest();
+
+        xhr.addEventListener('load', function(e) {
+            let info = e.target;
+            if (( info.readyState == 4 ) && (info.status == 200)) {
+                console.log(info);
+            }
+        });
+
+        let url = '/api/parcel-doc-info/' + parcel_id;
+        xhr.open('get', url);
+    }
+
+    get_details();
 }
 
