@@ -36,14 +36,14 @@
                     <tbody>
                     {% for f in context.files %}
                         <tr>
-                            <td class="col-xx-4"><a target="_blank" href="/sendfile/{{ f.encoded }}">{{ f.name }}</a>
+                            <td class="col-xx-4"><a target="_blank" href="/fileio/sendfile/{{ f.encoded }}">{{ f.name }}</a>
                             </td>
                             <td class="col-xs-3">{{ f.filesize }}</td>
                             <td class="col-xs-3">{{ f.mtime }}</td>
                             <td class="col-xs-1">
-                                <a href="/renamefile/{{ f.encoded }}/{{ context.parcel }}" title="Rename"><img
+                                <a href="/fileio/renamefile/{{ f.encoded }}/{{ context.parcel }}" title="Rename"><img
                                         class="icon" src="{{ url_for('static', filename='icons/301-edit.svg') }}"/></a>
-                                <a href="/deletefile/{{ f.encoded }}/{{ context.parcel }}" title="Remove"><img
+                                <a href="/fileio/deletefile/{{ f.encoded }}/{{ context.parcel }}" title="Remove"><img
                                         class="icon" src="{{ url_for('static', filename='icons/301-garbage-1.svg') }}"/></a>
                             </td>
                         </tr>

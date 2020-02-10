@@ -5,29 +5,16 @@
         <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
         <div class="container">
             <div class="page-header">
-                <table class="table table-striped">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">Parcel ID</th>
-                            <th scope="col">Files</th>
-                            <th scope="col">Size</th>
-                        </tr>
-                    </thead>
-                    <tbody id="parcel_list">
-                        &nbsp;
-                    </tbody>
-                </table>
+                {% if True -%}
+                    <div id="user_note" class="">Please enter search value above.</div>
+                    <table class="table table-striped">
+                        <thead id="parcel_list_header" class="thead-dark">
+                        </thead>
+                        <tbody id="parcel_list">
+                        </tbody>
+                    </table>
+                {%- endif %}
             </div>
-            <hr>
-
-            <form action="/uploadfile" method="post" enctype="multipart/form-data">
-                <label>File:</label>
-                <input type="file" id="fileElem" name="file"/><br>
-                {# The following is set when user selects a parcel. #}
-                <input type="hidden" id="fileElemParcel" name="parcel_id" value=""/>
-                <input type="submit" />
-            </form>
-
             {% include 'footer.html' %}
         </div>
     <script type="text/javascript" src="{{ url_for('static', filename='js/functions.js') }}"></script>

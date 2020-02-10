@@ -1,15 +1,19 @@
 from flask import Flask, render_template, jsonify, request, make_response, redirect, send_file, send_from_directory
 from flask_bootstrap import Bootstrap
-from werkzeug.utils import secure_filename
 from data import Parcels
 from docs import ParcelFolder, FileList
-import json
 from appsettings import Settings
-from docs import ParcelFolder
-import os
 import base64
+from api.api_routes import api_routes
+from fileio.file_routes import file_routes
+from appsettings.appsetting_routes import appsetting_routes
+
 
 app = Flask(__name__)
+app.register_blueprint(api_routes, url_prefix='/api')
+app.register_blueprint(file_routes, url_prefix='/fileio')
+app.register_blueprint(appsetting_routes, url_prefix='/settings')
+
 Bootstrap(app)
 
 #
@@ -76,122 +80,6 @@ def route_parcels_page(page):
         'page': page
     }
     return render_template('home.html', context=context)
-
-
-@app.route('/api/parcels')
-def route_api_parcels():
-    p = Parcels()
-    p.load_parcels()
-    return jsonify(p.parcels), 200
-
-
-@app.route('/api/parcel/<parcel>')
-def route_api_parcel_parcel(parcel):
-    p = Parcels()
-    p.load_one_parcel(parcel)
-    if p.parcel is None:
-        result_code = 204
-    else:
-        result_code = 200
-    return jsonify(p.parcel), result_code
-
-
-@app.route('/api/parcel-doc-info/<parcel>')
-def route_api_parcel_doc_info(parcel):
-    files = FileList(parcel=parcel)
-    files_details = files.file_sys_details()
-    return jsonify(files_details), 200
-
-
-@app.route('/api/parcel-search/<srch_str>')
-def route_parcel_search(srch_str):
-    search_str = srch_str
-    p = Parcels()
-    p.filter_parcels(partial=search_str)
-    return jsonify(p.parcels_flt), 200
-
-
-@app.route('/api/parcel-files/<parcel>')
-def route_parcel_files(parcel):
-    file_list = FileList(parcel=parcel)
-    return jsonify(file_list.files), 200
-
-
-@app.route('/setup', methods=['GET', 'POST'])
-def route_setup():
-    if request.method == 'GET':
-        settings = Settings()
-        context = {'settings': settings.items}
-        return render_template('setup.html', context=context)
-    else:
-        # Extract each item from form, and save back to settings.
-        settings = Settings()
-        for item in settings.items:
-            formitem = request.form[item['name']]
-            item['value'] = formitem
-        settings.save_config()
-        return redirect('/setup')
-
-
-@app.route('/sendfile/<encoded>')
-def route_sendfile(encoded):
-    filename = base64.standard_b64decode(encoded).decode('ascii')
-    print(filename)
-    folder, file = os.path.split(filename)
-    return send_file(filename, as_attachment=True, attachment_filename=file)
-
-
-@app.route('/deletefile/<encoded>/<parcel>')
-def route_deletefile(encoded, parcel):
-    filename = base64.standard_b64decode(encoded).decode('ascii')
-    os.remove(filename)
-    redirect_to = '/selected/%s' % parcel
-    return redirect(redirect_to)
-
-@app.route('/renamefile/<encoded>/<parcel>')
-def route_renamefile(encoded, parcel):
-    filename = base64.standard_b64decode(encoded).decode('ascii')
-    folder, file = os.path.split(filename)
-    context = {
-        'title': 'rename parcel file',
-        'showsearch': False,
-        'parcel': parcel,
-        'file': file,
-        'encoded': encoded
-    }
-    return render_template('rename_parcel_file.html', context=context)
-
-
-@app.route('/renamefile', methods=['POST'])
-def route_renamefile_post():
-    encoded = request.form['encoded']
-    parcel = request.form['parcel']
-    newfilename = request.form['newfilename']
-    #
-    # Extract full path, and then split into path and name.
-    fullpath = base64.standard_b64decode(encoded).decode('ascii')
-    folder, file = os.path.split(fullpath)
-    #
-    # create new full path
-    newfullpath = os.path.join(folder, newfilename)
-    #
-    # now rename the old file to new file.
-    os.rename(fullpath, newfullpath)
-
-    redirect_to = '/selected/%s' % parcel
-    return redirect(redirect_to)
-
-
-@app.route('/uploadfiles', methods=['POST'])
-def route_uploadfiles():
-    for item in request.files:
-        f = request.files[item]
-        parcel_id = request.form['parcel_id']
-        pf = ParcelFolder(parcel=parcel_id)
-        fullpath = os.path.join(pf.path, secure_filename(f.filename))
-        f.save(fullpath)
-
-    return jsonify({'status': 'ok'}), 200
 
 
 @app.route('/favicon.ico')

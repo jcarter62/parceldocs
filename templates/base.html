@@ -1,7 +1,7 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}{{ context.title }}{% endblock %}
 {% block navbar %}
-    <div class="navbar navbar-inverse" role="navigation">
+    <div class="navbar navbar-grey" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -18,11 +18,12 @@
                         <div class="form-group">
                             <input type="text" placeholder="Parcel ID" onkeyup="parcel_lookup()" id="inp_parcel"/>
                         </div>
+                        <img class="iconx2" src="{{ url_for('static', filename='icons/301-picture-1.svg') }}" onclick="parcel_lookup()" />
                     </form>
                 {% endif %}
                 <ul class="nav navbar-nav">
                     <li><a href="/"><img class="iconx2" src="{{ url_for('static', filename='icons/301-house.svg') }}"/></a></li>
-                    <li><a href="/setup">Setup</a></li>
+                    <li><a href="/settings/setup">Setup</a></li>
                 </ul>
             </div>
         </div>

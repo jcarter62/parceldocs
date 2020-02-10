@@ -63,9 +63,25 @@ function get_selected_parcel() {
 function parcel_load_value() {
     let value = localStorage.getItem('inp_parcel');
     if (value != null) {
-        let element = document.getElementById('inp_parcel');
-        element.value = value;
-        parcel_partial_load(value);
+        if ( value > '' ) {
+            let element = document.getElementById('inp_parcel');
+            element.value = value;
+            parcel_partial_load(value);
+        }
+    }
+}
+
+function show_parcel_list_header() {
+    let e = document.getElementById('parcel_list_header');
+    let s = '<tr>' +
+            '<th scope="col">Parcel ID</th>' +
+            '<th scope="col">Files</th>' +
+            '<th scope="col">Size</th>' +
+            '</tr>';
+    e.innerHTML = s;
+    let note = document.getElementById('user_note');
+    if ( !note.classList.contains('hidden')) {
+        note.classList.add('hidden');
     }
 }
 
@@ -82,6 +98,7 @@ function parcel_partial_load(search_value) {
             parcels = JSON.parse(parcels);
             let e = document.getElementById('parcel_list');
             let new_text = '';
+            show_parcel_list_header();
             for (let i in parcels) {
                 let tag = '<tr><td class="col-xs-4" ><a href="/selected/' + parcels[i]['parcel'] + '">'
                 new_text = new_text + tag;
@@ -93,6 +110,7 @@ function parcel_partial_load(search_value) {
             }
             new_text = new_text + '';
             e.innerHTML = new_text;
+
         }
     }
 }
@@ -122,7 +140,7 @@ function retrieve_parcel_files(parcel_id) {
                 new_text = '';
                 for (let i in files) {
                     let encoded = window.btoa(files[i].fullpath);
-                    let tag = '<div class="row"><a target="_blank" href="/sendfile/' + encoded + '">';
+                    let tag = '<div class="row"><a target="_blank" href="/fileio/sendfile/' + encoded + '">';
                     new_text = new_text + tag;
                     new_text = new_text + files[i].name;
                     new_text = new_text + '</a></div>';
@@ -175,7 +193,7 @@ function dragdrop_init() {
             }
         });
 
-        xhr.open('post', '/uploadfiles');
+        xhr.open('post', '/fileio/uploadfiles');
         xhr.send(formData);
     }
 

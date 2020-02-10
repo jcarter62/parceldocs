@@ -17,7 +17,7 @@ def route_setup():
     if request.method == 'GET':
         settings = Settings()
         context = {'settings': settings.items}
-        return render_template('setup.html', context=context)
+        return render_template('appsettings/templates/setup.html', context=context)
     else:
         # Extract each item from form, and save back to settings.
         settings = Settings()

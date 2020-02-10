@@ -6,6 +6,16 @@
     height: 2.0em;
 }
 
+.navbar-grey {
+    background-color: #AAAAAA;
+    border-color: #AAAAAA;
+    font-weight: bolder;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
 /* Ref: https://www.w3schools.com/howto/howto_css_fixed_footer.asp */
 .footer {
     position: fixed;

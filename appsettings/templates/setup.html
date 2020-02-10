@@ -15,7 +15,7 @@
                 <div class="jumbotron tabletext">
                     <h3>Application Settings</h3>
                     <hr>
-                    <form class="form-horizontal" action="/setup" method="post">
+                    <form class="form-horizontal" action="/settings/setup" method="post">
                         {% for item in context.settings %}
                             <div class="form-group">
                                 <label class="control-label col-xs-3" for="{{ item['name'] }}">{{ item['name'] }}</label>
