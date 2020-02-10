@@ -77,6 +77,7 @@ function show_parcel_list_header() {
             '<th scope="col">Parcel ID</th>' +
             '<th scope="col">Files</th>' +
             '<th scope="col">Size</th>' +
+            '<th scope="col">State</th>' +
             '</tr>';
     e.innerHTML = s;
     let note = document.getElementById('user_note');
@@ -98,6 +99,8 @@ function parcel_partial_load(search_value) {
             parcels = JSON.parse(parcels);
             let e = document.getElementById('parcel_list');
             let new_text = '';
+            let active_parcel = '<td class="col-xs-1"><img  class="icon" src="/static/icons/301-list.svg" title="Active Parcel" /></td>';
+            let inactive_parcel = '<td class="col-xs-1"><img class="icon" src="/static/icons/301-close.svg" title="In-Active Parcel" /></td>';
             show_parcel_list_header();
             for (let i in parcels) {
                 let tag = '<tr><td class="col-xs-4" ><a href="/selected/' + parcels[i]['parcel'] + '">'
@@ -106,6 +109,12 @@ function parcel_partial_load(search_value) {
                 new_text = new_text + '</a></td>';
                 new_text = new_text + '<td class="col-xs-3">' + parcels[i]['files'] + '</td>';
                 new_text = new_text + '<td class="col-xs-3">' + parcels[i]['size'] + '</td>';
+
+                if ( parcels[i]['isactive'] == '1' ){
+                    new_text = new_text + active_parcel;
+                } else {
+                    new_text = new_text + inactive_parcel;
+                }
                 new_text = new_text + '</tr>';
             }
             new_text = new_text + '';
@@ -222,3 +231,7 @@ function parcel_files_init(parcel_id) {
     get_details();
 }
 
+function delete_search_string() {
+    localStorage.removeItem('inp_parcel');
+    window.location.href = "/";
+}

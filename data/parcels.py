@@ -28,11 +28,15 @@ class Parcels:
         result = []
         conn = pyodbc.connect(self._conn_str_())
         cursor = conn.cursor()
-        cmd = 'select parcel_id from parcel where isactive=%s order by parcel_id;' % self.active
+        cmd = 'select parcel_id, isactive from parcel order by parcel_id;'
         try:
             for row in cursor.execute(cmd):
                 parcel_record = self._extract_row(row)
-                result.append(parcel_record['parcel_id'])
+                record = {
+                    'parcel_id': parcel_record['parcel_id'],
+                    'isactive': parcel_record['isactive']
+                }
+                result.append(record)
         except Exception as e:
             print(str(e))
         self.parcels = copy.deepcopy(result)
@@ -78,9 +82,10 @@ class Parcels:
             token = partial.lower()
             i = 0
             while i < len(self.parcels):
-                if token in self.parcels[i].lower():
+                if token in self.parcels[i]['parcel_id'].lower():
                     matched = {
-                        'parcel': self.parcels[i],
+                        'parcel': self.parcels[i]['parcel_id'],
+                        'isactive': self.parcels[i]['isactive'],
                         'files': 0,
                         'size': 0.0
                     }
