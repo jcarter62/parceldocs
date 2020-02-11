@@ -4,6 +4,8 @@ from api.api_routes import api_routes
 from fileio.file_routes import file_routes
 from appsettings.appsetting_routes import appsetting_routes
 from ui.ui_routes import ui_routes
+from wkroute.wkroute import wkroute
+
 import os
 
 app = Flask(__name__)
@@ -11,6 +13,8 @@ app.register_blueprint(ui_routes, url_prefix='')
 app.register_blueprint(api_routes, url_prefix='/api')
 app.register_blueprint(file_routes, url_prefix='/fileio')
 app.register_blueprint(appsetting_routes, url_prefix='/settings')
+app.register_blueprint(wkroute, url_prefix='/.well-known')
+
 Bootstrap(app)
 
 
