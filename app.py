@@ -1,10 +1,12 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, session
 from flask_bootstrap import Bootstrap
+from flask_mongo_session.session_processor import MongoSessionProcessor
 from api.api_routes import api_routes
 from fileio.file_routes import file_routes
 from appsettings.appsetting_routes import appsetting_routes
 from ui.ui_routes import ui_routes
 from wkroute.wkroute import wkroute
+from auth.auth_routes import auth_routes
 
 import os
 
@@ -14,8 +16,28 @@ app.register_blueprint(api_routes, url_prefix='/api')
 app.register_blueprint(file_routes, url_prefix='/fileio')
 app.register_blueprint(appsetting_routes, url_prefix='/settings')
 app.register_blueprint(wkroute, url_prefix='/.well-known')
+app.register_blueprint(auth_routes, url_prefix='/auth')
 
 Bootstrap(app)
+
+#
+# Setup Server based session storage.
+#
+try:
+    from appsettings import Settings
+    settings = Settings()
+    s_host = settings.get('mongo_host')
+    s_port = settings.get('mongo_port')
+    s_db = settings.get('mongo_db')
+    s_cookie = settings.get('session_cookie')
+    _connection_ = 'mongodb://%s:%s/%s' % (s_host, s_port, s_db)
+    app.session_cookie_name = s_cookie
+    app.session_interface = MongoSessionProcessor(_connection_)
+except Exception as e:
+    print('Error with Settings... %s ' % e.__str__())
+#     exit()
+
+
 
 
 @ui_routes.route('/favicon.ico')

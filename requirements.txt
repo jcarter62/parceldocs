@@ -1,6 +1,7 @@
 werkzeug
 Flask
 Flask-Bootstrap
+flask-mongo-session
 pyodbc
 Click==7.0
 dominate==2.4.0
@@ -9,3 +10,4 @@ Jinja2==2.11.0
 MarkupSafe==1.1.1
 visitor==0.1.3
 waitress
+Flask-Session>=0,<1

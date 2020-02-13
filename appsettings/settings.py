@@ -10,11 +10,19 @@ class Defaults:
             {'name': 'mongo_host', 'value': 'localhost'},
             {'name': 'mongo_port', 'value': '27017'},
             {'name': 'mongo_db', 'value': 'parceldocs'},
-            {'name': 'mongo_parcels', 'value': 'parcels'},
+            {'name': 'session_cookie', 'value': 'pdcookie'},
             {'name': 'sqlserver', 'value': 'sql-svr\\mssqlr2'},
             {'name': 'sqldb', 'value': 'wmis_ibm'},
-            {'name': 'auth_api', 'value': 'http://192.168.1.2'},
-            {'name': 'root_folder', 'value': 'd:\\parcel_docs'}
+            {'name': 'root_folder', 'value': 'd:\\parcel_docs'},
+            {'name': 'ad_api', 'value': 'https://host.com'},
+            {'name': 'ad_api_key', 'value': 'secret-key'},
+
+            {'name': 'ms-client_secret', 'value': 'value'},
+            {'name': 'ms-authority', 'value': 'value'},
+            {'name': 'ms-client_id', 'value': 'value'},
+            {'name': 'ms-redirect_path', 'value': 'value'},
+            {'name': 'ms-scope', 'value': 'value'},
+
         ]
         return
 

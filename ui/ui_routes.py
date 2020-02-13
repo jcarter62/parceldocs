@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, send_from_directory
+from flask import Blueprint, render_template, send_from_directory, session
 from docs import FileList
 from data import Parcels
 import base64
@@ -13,6 +13,7 @@ def home():
         'title': 'home',
         'showsearch': True,
     }
+    session['page'] = '/'
     return render_template('home.html', context=context)
 
 
@@ -51,6 +52,7 @@ def route_selected_parcel(parcel_id):
         'files': file_list.files,
         'details': details
     }
+    session['page'] = '/selected/%s' % parcel_id
     return render_template('selected_parcel.html', context=context)
 
 
