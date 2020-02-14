@@ -20,11 +20,14 @@
                         </div>
                         <img class="iconx2" src="{{ url_for('static', filename='icons/301-picture-1.svg') }}" onclick="parcel_lookup()" />
                         <img class="iconx2" src="{{ url_for('static', filename='icons/301-garbage-1.svg') }}" onclick="delete_search_string()" />
+                        <img class="iconx2" src="{{ url_for('static', filename='icons/301-stairs.svg') }}" title="Logout" onclick="logout_button()" />
                     </form>
                 {% endif %}
                 <ul class="nav navbar-nav">
                     <li><a href="/"><img class="iconx2" src="{{ url_for('static', filename='icons/301-house.svg') }}"/></a></li>
-{#                    <li><a href="/settings/setup">Setup</a></li>#}
+                    {% if context.auth['admin'] %}
+                    <li><a href="/settings/setup">Settings</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, send_from_directory, session
+from flask import Blueprint, render_template, session, g, redirect
 from docs import FileList
 from data import Parcels
 import base64
@@ -9,9 +9,13 @@ ui_routes = Blueprint('ui_routes', __name__, static_folder='static', template_fo
 
 @ui_routes.route('/')
 def home():
+    if not g.auth['user']:
+        return redirect('/auth/login')
+
     context = {
         'title': 'home',
         'showsearch': True,
+        'auth': g.auth
     }
     session['page'] = '/'
     return render_template('home.html', context=context)
@@ -33,6 +37,9 @@ def route_selected_parcel(parcel_id):
         result = str(k) + 'k'
         return result
 
+    if not g.auth['user']:
+        return redirect('/auth/login')
+
     file_list = FileList(parcel=parcel_id)
     for f in file_list.files:
         fpath = bytes(f['fullpath'], 'utf-8')
@@ -50,7 +57,8 @@ def route_selected_parcel(parcel_id):
         'showsearch': False,
         'parcel': parcel_id,
         'files': file_list.files,
-        'details': details
+        'details': details,
+        'auth': g.auth
     }
     session['page'] = '/selected/%s' % parcel_id
     return render_template('selected_parcel.html', context=context)

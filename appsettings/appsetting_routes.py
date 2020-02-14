@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, redirect, request
+from flask import Blueprint, render_template, jsonify, redirect, request, g
 from .settings import Settings
 
 appsetting_routes = Blueprint('appsetting_routes', __name__, static_folder='static', template_folder='templates')
@@ -8,7 +8,10 @@ appsetting_routes = Blueprint('appsetting_routes', __name__, static_folder='stat
 def route_setup():
     if request.method == 'GET':
         settings = Settings()
-        context = {'settings': settings.items}
+        context = {
+            'settings': settings.items,
+            'auth': g.auth
+        }
         return render_template('setup.html', context=context)
     else:
         # Extract each item from form, and save back to settings.

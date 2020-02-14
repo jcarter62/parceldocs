@@ -23,6 +23,10 @@ class Defaults:
             {'name': 'ms-redirect_path', 'value': 'value'},
             {'name': 'ms-scope', 'value': 'value'},
 
+            {'name': 'session_host', 'value': 'localhost'},
+            {'name': 'session_port', 'value': '27017'},
+            {'name': 'session_db', 'value': 'session'},
+
         ]
         return
 
@@ -30,7 +34,7 @@ class Defaults:
         result = ''
         try:
             for v in self.values:
-                if v['name'] == name:
+                if v['name'].lower() == name.lower():
                     result = v['value']
                     break
         except KeyError as e:

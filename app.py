@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, session
+from flask import Flask, send_from_directory, session, request, json, make_response, url_for, redirect, g
 from flask_bootstrap import Bootstrap
 from flask_mongo_session.session_processor import MongoSessionProcessor
 from api.api_routes import api_routes
@@ -7,6 +7,9 @@ from appsettings.appsetting_routes import appsetting_routes
 from ui.ui_routes import ui_routes
 from wkroute.wkroute import wkroute
 from auth.auth_routes import auth_routes
+# from auth.auth_routes import logged_in
+from auth.auth_routes import UserInfo
+import uuid
 
 import os
 
@@ -35,12 +38,38 @@ try:
     app.session_interface = MongoSessionProcessor(_connection_)
 except Exception as e:
     print('Error with Settings... %s ' % e.__str__())
-#     exit()
 
 
+@app.before_request
+def app_before_request():
+    #
+    # Don't check if we are logged in for the following paths
+    #
+    try:
+        path = request.full_path + '    '
+        shortpath = path[0:4]
+        if shortpath in ['/api', '/fil', '/set', '/.we', '/aut']:
+            return
+    finally:
+        pass
+
+    user = UserInfo(sess=session)
+
+    auth = {
+        'authenticated': False,
+        'user': False,
+        'admin': False
+    }
+    if user.authenticated:
+        auth['authenticated'] = True
+        if user.is_user:
+            auth['user'] = True
+        if user.is_admin:
+            auth['admin'] = True
+    g.auth = auth
 
 
-@ui_routes.route('/favicon.ico')
+@app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 

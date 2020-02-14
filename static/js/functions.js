@@ -235,3 +235,7 @@ function delete_search_string() {
     localStorage.removeItem('inp_parcel');
     window.location.href = "/";
 }
+
+function logout_button() {
+    window.location.href = "/auth/logout";
+}

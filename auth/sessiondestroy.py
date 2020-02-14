@@ -1,6 +1,7 @@
 from flask import session, request
 from pymongo import MongoClient
 import os
+from appsettings import Settings
 
 
 class SessionDestroy:
@@ -18,9 +19,10 @@ class SessionDestroy:
         for key in skeys:
             session.pop(key)
 
-        uri = 'mongodb://%s:%s' % (os.getenv('SESSION_HOST'), os.getenv('SESSION_PORT'))
-        client = MongoClient(uri)
-        db = client[os.getenv('SESSION_DB')]
+        settings = Settings()
+
+        uri = 'mongodb://%s:%s/%s' % (settings.get('session_host'), settings.get('session_port'), settings.get('session_db'))
+        db = MongoClient(uri)
         collection = db['session']
 
         del_query = {'_id': sess.get('_id')}
