@@ -5,6 +5,7 @@ from appsettings import Settings
 from .sessiondestroy import SessionDestroy
 import requests, json
 from ui.ui_routes import ui_routes
+from performance import Performance
 
 
 auth_routes = Blueprint('auth_routes', __name__, static_folder='static', template_folder='templates')
@@ -24,9 +25,13 @@ class UserInfo:
             self.email = ''
             self.name = ''
 
+        Performance(module='UserInfo', func='__init__').log('A')
         self.logged_in()
+        Performance(module='UserInfo', func='__init__').log('B')
         if self.authenticated:
             self.load_userinfo()
+            Performance(module='UserInfo', func='__init__').log('C')
+
 
     def logged_in(self):
         if self.session.get('user'):
