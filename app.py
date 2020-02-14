@@ -42,6 +42,12 @@ except Exception as e:
 
 @app.before_request
 def app_before_request():
+    auth = {
+        'authenticated': False,
+        'user': False,
+        'admin': False
+    }
+    g.auth = auth
     #
     # Don't check if we are logged in for the following paths
     #
@@ -55,11 +61,6 @@ def app_before_request():
 
     user = UserInfo(sess=session)
 
-    auth = {
-        'authenticated': False,
-        'user': False,
-        'admin': False
-    }
     if user.authenticated:
         auth['authenticated'] = True
         if user.is_user:
