@@ -44,8 +44,6 @@ except Exception as e:
 
 @app.before_request
 def app_before_request():
-    Performance(module='app', func='before_request').log('start')
-
     auth = {
         'authenticated': False,
         'user': False,
@@ -63,9 +61,7 @@ def app_before_request():
     finally:
         pass
 
-    Performance(module='app', func='before_request').log('UserInfo A')
     user = UserInfo(sess=session)
-    Performance(module='app', func='before_request').log('UserInfo B')
 
     if user.authenticated:
         auth['authenticated'] = True
@@ -74,13 +70,11 @@ def app_before_request():
         if user.is_admin:
             auth['admin'] = True
     g.auth = auth
-    Performance(module='app', func='before_request').end()
 
 
 
 @app.after_request
 def after_request_func(response):
-    print('-- End Request: %s ' % datetime.datetime.now().strftime("%a, %d %B %Y %H:%M:%S"))
     return response
 
 

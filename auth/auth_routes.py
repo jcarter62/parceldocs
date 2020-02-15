@@ -5,7 +5,6 @@ from appsettings import Settings
 from .sessiondestroy import SessionDestroy
 import requests, json
 from ui.ui_routes import ui_routes
-from performance import Performance
 
 
 auth_routes = Blueprint('auth_routes', __name__, static_folder='static', template_folder='templates')
@@ -25,12 +24,9 @@ class UserInfo:
             self.email = ''
             self.name = ''
 
-        Performance(module='UserInfo', func='__init__').log('A')
         self.logged_in()
-        Performance(module='UserInfo', func='__init__').log('B')
         if self.authenticated:
             self.load_userinfo()
-            Performance(module='UserInfo', func='__init__').log('C')
 
 
     def logged_in(self):
@@ -56,9 +52,14 @@ class UserInfo:
                 return
             record = data.json()
 
-            self.authenticated = record['authenticated']
-            self.is_user = record['parceldocs']
-            self.is_admin = record['parceldocs-admin']
+            if record['name'] == self.name:
+                self.authenticated = True
+                self.is_admin = record['admin']
+                self.is_user = record['user']
+            else:
+                self.authenticated = False
+                self.is_user = False
+                self.is_admin = False
 
         except Exception as e:
             print('Error in check_groups: %s' % e.__str__())
