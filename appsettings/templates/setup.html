@@ -20,7 +20,7 @@
                             <div class="form-group">
                                 <label class="control-label col-xs-3" for="{{ item['name'] }}">{{ item['name'] }}</label>
                                 <div class="col-xs-9">
-                                    <input type="text" id="{{ item['name'] }}" class="form-control" value="{{ item['value'] }}" name="{{ item['name'] }}" >
+                                    <input type="{{ item['type'] }}" id="{{ item['name'] }}" class="form-control" value="{{ item['value'] }}" name="{{ item['name'] }}" >
                                 </div>
                             </div>
                         {% endfor %}

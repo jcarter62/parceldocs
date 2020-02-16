@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, send_file, redirect, request
+from flask import Blueprint, render_template, jsonify, send_file, redirect, request, g
 from werkzeug.utils import secure_filename
 from docs import ParcelFolder
 import os
@@ -32,7 +32,8 @@ def route_renamefile(encoded, parcel):
         'showsearch': False,
         'parcel': parcel,
         'file': file,
-        'encoded': encoded
+        'encoded': encoded,
+        'auth': g.auth
     }
     return render_template('rename_parcel_file.html', context=context)
 

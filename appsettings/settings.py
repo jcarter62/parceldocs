@@ -1,31 +1,33 @@
 import copy
 import json
+import base64
+from .encdec import EncDec
 
 
 class Defaults:
 
     def __init__(self):
         self.values = [
-            {'name': 'appname', 'value': 'parceldocs'},
-            {'name': 'mongo_host', 'value': 'localhost'},
-            {'name': 'mongo_port', 'value': '27017'},
-            {'name': 'mongo_db', 'value': 'parceldocs'},
-            {'name': 'session_cookie', 'value': 'pdcookie'},
-            {'name': 'sqlserver', 'value': 'sql-svr\\mssqlr2'},
-            {'name': 'sqldb', 'value': 'wmis_ibm'},
-            {'name': 'root_folder', 'value': 'd:\\parcel_docs'},
-            {'name': 'ad_api', 'value': 'https://host.com'},
-            {'name': 'ad_api_key', 'value': 'secret-key'},
+            {'name': 'appname', 'value': 'parceldocs', 'type': 'text'},
+            {'name': 'mongo_host', 'value': 'localhost', 'type': 'text'},
+            {'name': 'mongo_port', 'value': '27017', 'type': 'text'},
+            {'name': 'mongo_db', 'value': 'parceldocs', 'type': 'text'},
+            {'name': 'session_cookie', 'value': 'pdcookie', 'type': 'text'},
+            {'name': 'sqlserver', 'value': 'sql-svr\\mssqlr2', 'type': 'text'},
+            {'name': 'sqldb', 'value': 'wmis_ibm', 'type': 'text'},
+            {'name': 'root_folder', 'value': 'd:\\parcel_docs', 'type': 'text'},
+            {'name': 'ad_api', 'value': 'https://host.com', 'type': 'text'},
+            {'name': 'ad_api_key', 'value': 'secret-key', 'type': 'password'},
 
-            {'name': 'ms-client_secret', 'value': 'value'},
-            {'name': 'ms-authority', 'value': 'value'},
-            {'name': 'ms-client_id', 'value': 'value'},
-            {'name': 'ms-redirect_path', 'value': 'value'},
-            {'name': 'ms-scope', 'value': 'value'},
+            {'name': 'ms-client_secret', 'value': 'value', 'type': 'password'},
+            {'name': 'ms-authority', 'value': 'value', 'type': 'text'},
+            {'name': 'ms-client_id', 'value': 'value', 'type': 'text'},
+            {'name': 'ms-redirect_path', 'value': 'value', 'type': 'text'},
+            {'name': 'ms-scope', 'value': 'value', 'type': 'text'},
 
-            {'name': 'session_host', 'value': 'localhost'},
-            {'name': 'session_port', 'value': '27017'},
-            {'name': 'session_db', 'value': 'session'},
+            {'name': 'session_host', 'value': 'localhost', 'type': 'text'},
+            {'name': 'session_port', 'value': '27017', 'type': 'text'},
+            {'name': 'session_db', 'value': 'session', 'type': 'text'},
 
         ]
         return
@@ -39,7 +41,18 @@ class Defaults:
                     break
         except KeyError as e:
             result = str(e)
+        return result
 
+    def get_type(self, name):
+        result = ''
+        try:
+            for v in self.values:
+                if v['name'].lower() == name.lower():
+                    if 'type' in v:
+                        result = v['type']
+                    break
+        except KeyError as e:
+            result = str(e)
         return result
 
 
@@ -67,12 +80,23 @@ class Settings:
         return filename
 
     def load_config(self):
-        filename = self.config_filename()
+        # filename = self.config_filename()
+        # try:
+        #     with open(filename, 'r') as f:
+        #         _text_ = f.read()
+        #         self.items = json.loads(_text_)
+        # except OSError as e:
+        #     print(str(e))
+        #
+        filename = self.config_filename()+'.enc'
         try:
             with open(filename, 'r') as f:
-                self.items = json.load(f)
+                _enc_ = f.read()
+                _text_ = EncDec().decrypt(_enc_)
+                self.items = json.loads(_text_)
         except OSError as e:
             print(str(e))
+
         #
         # add any missing items
         #
@@ -84,17 +108,34 @@ class Settings:
                     found = True
                     break
             if not found:
-                new_item = {'name': i['name'], 'value': i['value']}
+                new_item = {'name': i['name'], 'value': i['value'], 'type': i['type']}
                 self.items.append(new_item)
-        # completed with adding missing items.
+        #
+        # Add types to each item where missing.
+        #
+        for item in self.items:
+            item['type'] = Defaults().get_type(item['name'])
+        #
+
 
     def save_config(self):
         filename = self.config_filename()
         try:
             with open(filename, 'w') as output_file:
-                json.dump(self.items, output_file)
+                _text_ = json.dumps(self.items)
+                output_file.write(_text_)
         except Exception as e:
             print(str(e))
+
+        filename = self.config_filename()+'.enc'
+        try:
+            with open(filename, 'w') as output_file:
+                _text_ = json.dumps(self.items)
+                _enc_ = EncDec().encrypt(_text_)
+                output_file.write(_enc_)
+        except Exception as e:
+            print(str(e))
+
 
     def get(self, name: str = ''):
         result = ''
@@ -104,15 +145,28 @@ class Settings:
                 break
         return result
 
-    def set(self, name: str = '', value: str = ''):
+    def get_type(self, name: str = ''):
+        result = ''
+        for item in self.items:
+            if name == item['name']:
+                if 'type' in item:
+                    result = item['type']
+                else:
+                    result = ''
+                break
+        return result
+
+
+    def set(self, name: str = '', value: str = '', type: str = ''):
         item_found = False
         for item in self.items:
             if name == item['name']:
                 item['value'] = value
+                item['type'] = type
                 item_found = True
                 break
         if not item_found:
-            item = { 'name': name, 'value': value }
+            item = { 'name': name, 'value': value, 'type': type }
             self.items.append(item)
 
         return
