@@ -7,6 +7,7 @@ from .encdec import EncDec
 class Defaults:
 
     def __init__(self):
+        self.appname = 'parceldocs'
         self.values = [
             {'name': 'appname', 'value': 'parceldocs', 'type': 'text'},
             {'name': 'mongo_host', 'value': 'localhost', 'type': 'text'},
@@ -62,16 +63,16 @@ class Settings:
         import copy
         defaults = Defaults()
         # make a non-referenced copy of the defaults.
-        self.items = copy.deepcopy(defaults.values)
+        self.items = []
         self.load_config()
 
     def config_filename(self):
         import os
         osname = os.name
         if osname == 'nt':
-            _data_folder = os.path.join(os.getenv('APPDATA'), self.get('appname'))
+            _data_folder = os.path.join(os.getenv('APPDATA'), Defaults().appname)
         else:
-            _data_folder = os.path.join(os.getenv('HOME'), self.get('appname'))
+            _data_folder = os.path.join(os.getenv('HOME'), Defaults().appname)
 
         if not os.path.exists(_data_folder):
             os.makedirs(_data_folder)
@@ -86,6 +87,8 @@ class Settings:
                 _enc_ = f.read()
                 _text_ = EncDec().decrypt(_enc_)
                 self.items = json.loads(_text_)
+        except FileNotFoundError:
+            self.items = copy.deepcopy(Defaults().values)
         except OSError as e:
             print(str(e))
 

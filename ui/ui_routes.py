@@ -3,7 +3,7 @@ from docs import FileList
 from data import Parcels
 import base64
 import os
-# from useractivity import UserActivity
+from useractivity import UserActivity
 # UserActivity().save(parcel=parcel_id, activity='view', msg='view parcel')
 
 ui_routes = Blueprint('ui_routes', __name__, static_folder='static', template_folder='templates')
@@ -54,13 +54,17 @@ def route_selected_parcel(parcel_id):
     p.load_one_parcel(parcel_id)
     details = p.parcel
 
+    ua = UserActivity()
+    activity = ua.list(parcel=p.parcel['parcel_id'])
+
     context = {
         'title': 'parcel selected',
         'showsearch': False,
         'parcel': parcel_id,
         'files': file_list.files,
         'details': details,
-        'auth': g.auth
+        'auth': g.auth,
+        'ua': activity
     }
     session['page'] = '/selected/%s' % parcel_id
     return render_template('selected_parcel.html', context=context)

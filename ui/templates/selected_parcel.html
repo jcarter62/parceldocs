@@ -53,7 +53,33 @@
             </div>
             <hr>
             <div class="dropzone" id="dropzone">Drop Files Here to Upload.</div>
+            <hr>
+            {% if context.ua.__len__() > 0 %}
+            <div>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">User</th>
+                        <th scope="col">Activity</th>
+                        <th scope="col">Details</th>
+                        <th scope="col">Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for activity in context.ua %}
+                        <tr>
+                        <td class="col-xs-2">{{ activity.user }}</td>
+                        <td class="col-xs-2">{{ activity.activity }}</td>
+                        <td class="col-xs-6">{{ activity.msg }}</td>
+                        <td class="col-xs-2">{{ activity.ts }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
             {% include 'footer.html' %}
+
         </div>
         <script type="text/javascript" src="{{ url_for('static', filename='js/functions.js') }}"></script>
         <script type="text/javascript">

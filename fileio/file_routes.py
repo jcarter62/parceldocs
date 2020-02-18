@@ -20,8 +20,9 @@ def route_sendfile(encoded):
 @file_routes.route('/deletefile/<encoded>/<parcel>')
 def route_deletefile(encoded, parcel):
     filename = base64.standard_b64decode(encoded).decode('ascii')
+    folder, file = os.path.split(filename)
     os.remove(filename)
-    UserActivity().save(parcel=parcel, activity='deletefile', msg='delete file: %s' % filename )
+    UserActivity().save(parcel=parcel, activity='deletefile', msg='delete file: %s' % file )
     redirect_to = '/selected/%s' % parcel
     return redirect(redirect_to)
 
@@ -57,7 +58,7 @@ def route_renamefile_post():
     # now rename the old file to new file.
     os.rename(fullpath, newfullpath)
 
-    UserActivity().save(parcel=parcel, activity='renamefile', msg='%s to %s' % (fullpath, newfilename))
+    UserActivity().save(parcel=parcel, activity='renamefile', msg='%s to %s' % (file, newfilename))
 
     redirect_to = '/selected/%s' % parcel
     return redirect(redirect_to)
@@ -69,10 +70,11 @@ def route_uploadfiles():
         f = request.files[item]
         parcel_id = request.form['parcel_id']
         pf = ParcelFolder(parcel=parcel_id)
-        fullpath = os.path.join(pf.path, secure_filename(f.filename))
+        filename_only = secure_filename(f.filename)
+        fullpath = os.path.join(pf.path, filename_only)
         f.save(fullpath)
 
-        UserActivity().save(parcel=parcel_id, activity='uploadfile', msg='%s' % fullpath)
+        UserActivity().save(parcel=parcel_id, activity='uploadfile', msg='%s' % filename_only)
 
     return jsonify({'status': 'ok'}), 200
 

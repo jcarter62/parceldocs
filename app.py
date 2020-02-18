@@ -10,6 +10,7 @@ from auth.auth_routes import auth_routes
 # from auth.auth_routes import logged_in
 from auth.auth_routes import UserInfo
 import uuid
+from pymongo import MongoClient
 
 import os
 import datetime
@@ -36,6 +37,12 @@ try:
     s_db = settings.get('mongo_db')
     s_cookie = settings.get('session_cookie')
     _connection_ = 'mongodb://%s:%s/%s' % (s_host, s_port, s_db)
+
+    _client_ = MongoClient(host=['%s:%s' % (s_host, s_port)], serverSelectionTimeoutMS= 2000)
+    _client_status_ = _client_.server_info()
+    del _client_
+    del _client_status_
+
     app.session_cookie_name = s_cookie
     app.session_interface = MongoSessionProcessor(_connection_)
 except Exception as e:
