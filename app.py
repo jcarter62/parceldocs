@@ -47,8 +47,15 @@ def app_before_request():
     auth = {
         'authenticated': False,
         'user': False,
-        'admin': False
+        'admin': False,
+        'name': ''
     }
+    #
+    try:
+        auth['name'] = session['user']['name']
+    except Exception as e:
+        auth['name'] = str(e)
+
     g.auth = auth
     #
     # Don't check if we are logged in for the following paths
@@ -69,8 +76,10 @@ def app_before_request():
             auth['user'] = True
         if user.is_admin:
             auth['admin'] = True
-    g.auth = auth
 
+        # Record user name if possible.
+
+    g.auth = auth
 
 
 @app.after_request

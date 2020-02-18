@@ -3,6 +3,8 @@ from docs import FileList
 from data import Parcels
 import base64
 import os
+# from useractivity import UserActivity
+# UserActivity().save(parcel=parcel_id, activity='view', msg='view parcel')
 
 ui_routes = Blueprint('ui_routes', __name__, static_folder='static', template_folder='templates')
 

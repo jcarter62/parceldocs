@@ -76,19 +76,11 @@ class Settings:
         if not os.path.exists(_data_folder):
             os.makedirs(_data_folder)
 
-        filename = os.path.join(_data_folder, 'settings.json')
+        filename = os.path.join(_data_folder, 'settings')
         return filename
 
     def load_config(self):
-        # filename = self.config_filename()
-        # try:
-        #     with open(filename, 'r') as f:
-        #         _text_ = f.read()
-        #         self.items = json.loads(_text_)
-        # except OSError as e:
-        #     print(str(e))
-        #
-        filename = self.config_filename()+'.enc'
+        filename = self.config_filename()
         try:
             with open(filename, 'r') as f:
                 _enc_ = f.read()
@@ -115,19 +107,10 @@ class Settings:
         #
         for item in self.items:
             item['type'] = Defaults().get_type(item['name'])
-        #
 
 
     def save_config(self):
         filename = self.config_filename()
-        try:
-            with open(filename, 'w') as output_file:
-                _text_ = json.dumps(self.items)
-                output_file.write(_text_)
-        except Exception as e:
-            print(str(e))
-
-        filename = self.config_filename()+'.enc'
         try:
             with open(filename, 'w') as output_file:
                 _text_ = json.dumps(self.items)

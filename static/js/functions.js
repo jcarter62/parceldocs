@@ -239,3 +239,12 @@ function delete_search_string() {
 function logout_button() {
     window.location.href = "/auth/logout";
 }
+
+function pw2txt(id) {
+    let e = document.getElementById(id);
+    if (e.type == 'password') {
+        e.type = 'text';
+    } else {
+        e.type = 'password';
+    }
+}

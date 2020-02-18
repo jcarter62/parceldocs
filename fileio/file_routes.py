@@ -3,6 +3,8 @@ from werkzeug.utils import secure_filename
 from docs import ParcelFolder
 import os
 import base64
+from useractivity import UserActivity
+
 
 file_routes = Blueprint('file_routes', __name__, static_folder='static', template_folder='templates')
 
@@ -19,6 +21,7 @@ def route_sendfile(encoded):
 def route_deletefile(encoded, parcel):
     filename = base64.standard_b64decode(encoded).decode('ascii')
     os.remove(filename)
+    UserActivity().save(parcel=parcel, activity='deletefile', msg='delete file: %s' % filename )
     redirect_to = '/selected/%s' % parcel
     return redirect(redirect_to)
 
@@ -54,6 +57,8 @@ def route_renamefile_post():
     # now rename the old file to new file.
     os.rename(fullpath, newfullpath)
 
+    UserActivity().save(parcel=parcel, activity='renamefile', msg='%s to %s' % (fullpath, newfilename))
+
     redirect_to = '/selected/%s' % parcel
     return redirect(redirect_to)
 
@@ -66,6 +71,8 @@ def route_uploadfiles():
         pf = ParcelFolder(parcel=parcel_id)
         fullpath = os.path.join(pf.path, secure_filename(f.filename))
         f.save(fullpath)
+
+        UserActivity().save(parcel=parcel_id, activity='uploadfile', msg='%s' % fullpath)
 
     return jsonify({'status': 'ok'}), 200
 
