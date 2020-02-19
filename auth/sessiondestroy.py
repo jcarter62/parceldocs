@@ -21,12 +21,13 @@ class SessionDestroy:
 
         settings = Settings()
 
-        uri = 'mongodb://%s:%s/%s' % (settings.get('session_host'), settings.get('session_port'), settings.get('session_db'))
-        db = MongoClient(uri)
+        uri = 'mongodb://%s:%s' % (settings.get('session_host'), settings.get('session_port'))
+        client = MongoClient(uri)
+        db = client[settings.get('session_db')]
         collection = db['session']
 
-        del_query = {'_id': sess.get('_id')}
+        del_query = {'_id': {'$eq': sess.get('_id')}}
         try:
-            collection.delete_one(del_query)
+            collection.find_one_and_delete(del_query)
         except Exception as e:
             print('Exception: %s' % str(e))

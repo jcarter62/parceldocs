@@ -1,5 +1,5 @@
 import msal as msal
-from flask import Blueprint, render_template, session, redirect, url_for, request
+from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify
 import uuid
 from appsettings import Settings
 from .sessiondestroy import SessionDestroy
@@ -88,8 +88,10 @@ def auth_route():
 @auth_routes.route(Settings().get('ms-redirect_path'))
 def auth_authorized():
     if request.args.get('state') != session.get('state'):
+        print('auth_authorized, A: %s' % url_for('ui_routes.home'))
         return redirect(url_for('ui_routes.home'))
     if 'error' in request.args:
+        print('auth_authorized, B: auth_error.html')
         return render_template('auth_error.html', result=request.args)
     if request.args.get('code'):
         cache = _load_cache()
@@ -100,16 +102,20 @@ def auth_authorized():
         result = _build_msal_app(cache=cache)\
             .acquire_token_by_authorization_code(code, scopes=scopes, redirect_uri=uri)
         if 'error' in result:
+            print('auth_authorized, C: auth_error.html')
             return render_template('auth_error.html', result=result)
         session['user'] = result.get('id_token_claims')
         _save_cache(cache)
+
+    print('auth_authorized, D: = %s' % url_for('ui_routes.home'))
     return redirect(url_for('ui_routes.home'))
 
 
 @auth_routes.route('/logout')
 def auth_logout():
     SessionDestroy(sess=session, req=request)
-    redirect_path = Settings().get('ms-authority') + "/oauth2/v2.0/logout" + "?post_logout_redirect_uri=" + url_for('ui_routes.home', _external=True)
+    redirect_url = url_for('ui_routes.home', _external=True)
+    redirect_path = Settings().get('ms-authority') + "/oauth2/v2.0/logout" + "?post_logout_redirect_uri=" + redirect_url
     response = redirect(redirect_path)
     response.delete_cookie(Settings().get('session_cookie'))
     return response
@@ -138,8 +144,10 @@ def _build_auth_url(authority=None, scopes=None, state=None):
     p1 = ([scopes] or [])
     p2 = state or str(uuid.uuid4())
     p3 = url_for('auth_routes.auth_authorized', _external=True)
-    return _build_msal_app(authority=authority).get_authorization_request_url(
+    result = _build_msal_app(authority=authority).get_authorization_request_url(
         p1, state=p2, redirect_uri=p3)
+    print('_build_auth_url, result = %s' % jsonify(result))
+    return result
 
 
 def _get_token_from_cache(scope=None):
@@ -150,5 +158,7 @@ def _get_token_from_cache(scope=None):
         result = cca.acquire_token_silent(scope, account=accounts[0])
         _save_cache(cache)
         return result
+    else:
+        return None
 
 
