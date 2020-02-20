@@ -97,7 +97,7 @@ def auth_authorized():
         cache = _load_cache()
         code = request.args['code']
         scopes = [Settings().get('ms-scope')]
-        uri = url_for('auth_routes.auth_authorized', _external=True)
+        uri = Settings().get('host-url') + url_for('auth_routes.auth_authorized', _external=False)
 
         result = _build_msal_app(cache=cache)\
             .acquire_token_by_authorization_code(code, scopes=scopes, redirect_uri=uri)
@@ -114,7 +114,7 @@ def auth_authorized():
 @auth_routes.route('/logout')
 def auth_logout():
     SessionDestroy(sess=session, req=request)
-    redirect_url = url_for('ui_routes.home', _external=True)
+    redirect_url = Settings().get('host-url') + url_for('ui_routes.home', _external=False)
     redirect_path = Settings().get('ms-authority') + "/oauth2/v2.0/logout" + "?post_logout_redirect_uri=" + redirect_url
     response = redirect(redirect_path)
     response.delete_cookie(Settings().get('session_cookie'))
@@ -143,7 +143,8 @@ def _build_msal_app(cache=None, authority=None):
 def _build_auth_url(authority=None, scopes=None, state=None):
     p1 = ([scopes] or [])
     p2 = state or str(uuid.uuid4())
-    p3 = url_for('auth_routes.auth_authorized', _external=True)
+    p3 = Settings().get('host-url') + url_for('auth_routes.auth_authorized', _external=False)
+
     result = _build_msal_app(authority=authority).get_authorization_request_url(
         p1, state=p2, redirect_uri=p3)
     print('_build_auth_url, result = %s' % jsonify(result))

@@ -30,6 +30,7 @@ class Defaults:
             {'name': 'session_port', 'value': '27017', 'type': 'text'},
             {'name': 'session_db', 'value': 'session', 'type': 'text'},
 
+            {'name': 'host-url', 'value': 'http://localhost:5000', 'type': 'text'},
         ]
         return
 
