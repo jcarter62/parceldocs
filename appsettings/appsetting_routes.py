@@ -20,5 +20,6 @@ def route_setup():
             formitem = request.form[item['name']]
             item['value'] = formitem
         settings.save_config()
-        return redirect('/settings/setup')
+        url = Settings().get('host-url') + '/settings/setup'
+        return redirect(url)
 

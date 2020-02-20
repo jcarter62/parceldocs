@@ -5,6 +5,7 @@ import base64
 import os
 from useractivity import UserActivity
 # UserActivity().save(parcel=parcel_id, activity='view', msg='view parcel')
+from appsettings import Settings
 
 ui_routes = Blueprint('ui_routes', __name__, static_folder='static', template_folder='templates')
 
@@ -12,7 +13,8 @@ ui_routes = Blueprint('ui_routes', __name__, static_folder='static', template_fo
 @ui_routes.route('/')
 def home():
     if not g.auth['user']:
-        return redirect('/auth/login')
+        login_page = Settings().get('host-url') + '/auth/login'
+        return redirect(login_page)
 
     context = {
         'title': 'home',
@@ -40,7 +42,8 @@ def route_selected_parcel(parcel_id):
         return result
 
     if not g.auth['user']:
-        return redirect('/auth/login')
+        login_page = Settings().get('host-url') + '/auth/login'
+        return redirect(login_page)
 
     file_list = FileList(parcel=parcel_id)
     for f in file_list.files:

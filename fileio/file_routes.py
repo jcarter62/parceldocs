@@ -4,6 +4,7 @@ from docs import ParcelFolder
 import os
 import base64
 from useractivity import UserActivity
+from appsettings import Settings
 
 
 file_routes = Blueprint('file_routes', __name__, static_folder='static', template_folder='templates')
@@ -23,7 +24,7 @@ def route_deletefile(encoded, parcel):
     folder, file = os.path.split(filename)
     os.remove(filename)
     UserActivity().save(parcel=parcel, activity='deletefile', msg='delete file: %s' % file )
-    redirect_to = '/selected/%s' % parcel
+    redirect_to = Settings().get('host-url') + '/selected/%s' % parcel
     return redirect(redirect_to)
 
 
@@ -60,7 +61,7 @@ def route_renamefile_post():
 
     UserActivity().save(parcel=parcel, activity='renamefile', msg='%s to %s' % (file, newfilename))
 
-    redirect_to = '/selected/%s' % parcel
+    redirect_to = Settings().get('host-url') + '/selected/%s' % parcel
     return redirect(redirect_to)
 
 

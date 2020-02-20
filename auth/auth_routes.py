@@ -88,8 +88,9 @@ def auth_route():
 @auth_routes.route(Settings().get('ms-redirect_path'))
 def auth_authorized():
     if request.args.get('state') != session.get('state'):
-        print('auth_authorized, A: %s' % url_for('ui_routes.home'))
-        return redirect(url_for('ui_routes.home'))
+        url = Settings().get('host-url') + url_for('ui_routes.home')
+        print('auth_authorized, A: %s' % url)
+        return redirect(url)
     if 'error' in request.args:
         print('auth_authorized, B: auth_error.html')
         return render_template('auth_error.html', result=request.args)
@@ -107,8 +108,8 @@ def auth_authorized():
         session['user'] = result.get('id_token_claims')
         _save_cache(cache)
 
-    print('auth_authorized, D: = %s' % url_for('ui_routes.home'))
-    return redirect(url_for('ui_routes.home'))
+    url = Settings().get('host-url') + url_for('ui_routes.home')
+    return redirect(url)
 
 
 @auth_routes.route('/logout')
@@ -144,10 +145,8 @@ def _build_auth_url(authority=None, scopes=None, state=None):
     p1 = ([scopes] or [])
     p2 = state or str(uuid.uuid4())
     p3 = Settings().get('host-url') + url_for('auth_routes.auth_authorized', _external=False)
-
     result = _build_msal_app(authority=authority).get_authorization_request_url(
         p1, state=p2, redirect_uri=p3)
-    print('_build_auth_url, result = %s' % jsonify(result))
     return result
 
 
