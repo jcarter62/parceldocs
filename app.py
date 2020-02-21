@@ -7,14 +7,13 @@ from appsettings.appsetting_routes import appsetting_routes
 from ui.ui_routes import ui_routes
 from wkroute.wkroute import wkroute
 from auth.auth_routes import auth_routes
-# from auth.auth_routes import logged_in
 from auth.auth_routes import UserInfo
-import uuid
 from pymongo import MongoClient
-
+from waitress import serve
+import logging
 import os
 import datetime
-from performance import Performance
+
 
 app = Flask(__name__)
 app.register_blueprint(ui_routes, url_prefix='')
@@ -48,9 +47,11 @@ try:
 except Exception as e:
     print('Error with Settings... %s ' % e.__str__())
 
-
 @app.before_request
 def app_before_request():
+
+    log_request(req=request)
+
     auth = {
         'authenticated': False,
         'user': False,
@@ -98,5 +99,17 @@ def after_request_func(response):
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
+
+def log_request(req: request = None):
+    if req == None:
+        return
+
+    msg = '%s - %s ' % (datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"), req.url)
+    print(msg)
+    return
+
+
 if __name__ == '__main__':
-    app.run()
+    logger = logging.getLogger('waitress')
+    logger.setLevel(logging.INFO)
+    serve(app, host='0.0.0.0', port=5000)
