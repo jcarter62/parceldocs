@@ -19,7 +19,13 @@ class Parcels:
         server = self.settings.get('sqlserver')
         database = self.settings.get('sqldb')
         driver = 'DRIVER={ODBC Driver 17 for SQL Server}'
-        return driver + ';SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;'
+        driver = driver + ';SERVER=' + server + ';DATABASE=' + database + ';'
+        if self.settings.get('sql-trusted').lower() == 'y':
+            driver = driver + 'Trusted_Connection=yes;'
+        else:
+            driver = driver + 'UID=' + self.settings.get('sql-user') + ';PWD='+ self.settings.get('sql-password')
+
+        return driver
 
     #
     # load self.parcels with data

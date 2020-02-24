@@ -16,6 +16,10 @@ class Defaults:
             {'name': 'session_cookie', 'value': 'pdcookie', 'type': 'text'},
             {'name': 'sqlserver', 'value': 'sql-svr\\mssqlr2', 'type': 'text'},
             {'name': 'sqldb', 'value': 'wmis_ibm', 'type': 'text'},
+            {'name': 'sql-trusted', 'value': 'y', 'type': 'text'},
+            {'name': 'sql-user', 'value': '', 'type': 'text'},
+            {'name': 'sql-password', 'value': '', 'type': 'password'},
+
             {'name': 'root_folder', 'value': 'd:\\parcel_docs', 'type': 'text'},
             {'name': 'ad_api', 'value': 'https://host.com', 'type': 'text'},
             {'name': 'ad_api_key', 'value': 'secret-key', 'type': 'password'},
