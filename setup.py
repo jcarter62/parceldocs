@@ -1,31 +1,28 @@
-from flask import Flask, redirect, render_template, request
-from appsettings import Settings
+from flask import Flask, redirect, render_template, request, g
+from appsettings.appsetting_routes import appsetting_routes
 from flask_bootstrap import Bootstrap
+from appsettings import Settings
 
 
 app = Flask(__name__)
-boostrap = Bootstrap(app)
+app.register_blueprint(appsetting_routes, url_prefix='/settings')
+Bootstrap(app)
+
+
+@app.before_request
+def app_before_request():
+    auth = {'authenticated': False, 'user': False, 'admin': False, 'name': ''}
+    #
+    g.auth = auth
+
+@app.after_request
+def after_request_func(response):
+    return response
 
 
 @app.route('/')
 def hello_world():
-    return redirect('/setup')
-
-
-@app.route('/setup', methods=['GET', 'POST'])
-def route_setup():
-    if request.method == 'GET':
-        settings = Settings()
-        context = {'settings': settings.items}
-        return render_template('appsettings/templates/setup.html', context=context)
-    else:
-        # Extract each item from form, and save back to settings.
-        settings = Settings()
-        for item in settings.items:
-            formitem = request.form[item['name']]
-            item['value'] = formitem
-        settings.save_config()
-        return redirect('/setup')
+    return redirect('/settings/setup')
 
 
 if __name__ == '__main__':
