@@ -71,7 +71,7 @@ def app_before_request():
     try:
         path = request.full_path + '    '
         shortpath = path[0:4]
-        if shortpath in ['/api', '/fil', '/set', '/.we', '/aut']:
+        if shortpath in ['/api', '/fil', '/set', '/.we']:
             return
     finally:
         pass
@@ -88,6 +88,11 @@ def app_before_request():
         # Record user name if possible.
 
     g.auth = auth
+
+    if path.__contains__('/auth/getAToken?code=') and auth['authenticated'] and ( not auth['user']):
+        target = Settings().get('host-url') + '/auth/logout'
+        return redirect(target)
+
 
 
 @app.after_request

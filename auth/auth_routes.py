@@ -82,7 +82,6 @@ def auth_route():
     session['state'] = guid
     auth_url = _build_auth_url(scopes=settings.get('ms-scope'), state=session['state'])
     return redirect(auth_url)
-#    return render_template('login.html', auth_url=auth_url, version=msal.__version__)
 
 
 @auth_routes.route(Settings().get('ms-redirect_path'))
