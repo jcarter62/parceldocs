@@ -26,8 +26,9 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/"><img class="iconx2" src="{{ url_for('static', filename='icons/301-house.svg') }}"/></a></li>
                     {% if context.auth['admin'] %}
-                    <li><a href="/settings/setup">Settings</a></li>
+                        <li><a href="/settings/setup">Settings</a></li>
                     {% endif %}
+                    <li><a href="/activity/log">Activity Log</a></li>
                 </ul>
             </div>
         </div>

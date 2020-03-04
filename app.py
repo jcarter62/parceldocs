@@ -8,6 +8,7 @@ from ui.ui_routes import ui_routes
 from wkroute.wkroute import wkroute
 from auth.auth_routes import auth_routes
 from auth.auth_routes import UserInfo
+from activity.activity_routes import activity_routes
 from pymongo import MongoClient
 from waitress import serve
 import logging
@@ -22,6 +23,7 @@ app.register_blueprint(file_routes, url_prefix='/fileio')
 app.register_blueprint(appsetting_routes, url_prefix='/settings')
 app.register_blueprint(wkroute, url_prefix='/.well-known')
 app.register_blueprint(auth_routes, url_prefix='/auth')
+app.register_blueprint(activity_routes, url_prefix='/activity')
 
 Bootstrap(app)
 

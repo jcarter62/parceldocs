@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+    {% block content %}
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+        <div class="container">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h3>
+                            Activity Log
+                        </h3>
+                    </div>
+                </div>
+                <div class="tabletext">
+                    {% if context.log.__len__() > 0 %}
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Parcel</th>
+                                <th scope="col">User</th>
+                                <th scope="col">Activity</th>
+                                <th scope="col">Details</th>
+                                <th scope="col">Time</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for activity in context.log %}
+                                <tr>
+                                    <td class="col-xs-2">{{ activity.parcel }}</td>
+                                    <td class="col-xs-2">{{ activity.user }}</td>
+                                    <td class="col-xs-1">{{ activity.activity }}</td>
+                                    <td class="col-xs-5">{{ activity.msg }}</td>
+                                    <td class="col-xs-2">{{ activity.ts }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+            <hr>
+            {% include 'footer.html' %}
+        </div>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/functions.js') }}"></script>
+    {% endblock %}
+{% endblock %}
