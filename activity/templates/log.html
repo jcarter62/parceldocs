@@ -27,7 +27,7 @@
                             <tbody>
                             {% for activity in context.log %}
                                 <tr>
-                                    <td class="col-xs-2">{{ activity.parcel }}</td>
+                                    <td class="col-xs-2"><a href="/selected/{{ activity.parcel }}">{{ activity.parcel }}</a></td>
                                     <td class="col-xs-2">{{ activity.user }}</td>
                                     <td class="col-xs-1">{{ activity.activity }}</td>
                                     <td class="col-xs-5">{{ activity.msg }}</td>
