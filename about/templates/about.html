@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+    {% block content %}
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+        <div class="container">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h3>
+                            About Application
+                        </h3>
+                    </div>
+                </div>
+                <div class="tabletext">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Date / Details</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for line in context.data %}
+                            <tr>
+                                <td class="col-xs-12">{{ line }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% include 'footer.html' %}
+        </div>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/functions.js') }}"></script>
+    {% endblock %}
+{% endblock %}

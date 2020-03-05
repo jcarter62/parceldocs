@@ -240,6 +240,10 @@ function logout_button() {
     window.location.href = "/auth/logout";
 }
 
+function about_button() {
+    window.location.href = "/about/application";
+}
+
 function pw2txt(id) {
     let e = document.getElementById(id);
     if (e.type == 'password') {

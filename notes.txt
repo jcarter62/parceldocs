@@ -1,0 +1,4 @@
+03/05/2020 The parcel id listed in activity log is a hyperlink to the parcel record.  Modified header to include logout on all pages.
+03/04/2020 Add activity log, listing most recent 100 records.
+02/24/2020 Changed data component to handle non-trusted sql connection.
+02/20/2020 Migrated to ubuntu linux platform
